@@ -28,9 +28,12 @@ server.listen(port, function () {
 
 // get our stream up and running
 io.sockets.on('connection', function (socket) {
+
+	console.log("connect to socket!");
   // if socket data with the 'vs-stream' namespace is received,
   // write the contents to the global ´lastImage´ variable
   socket.on('vs-stream', function (data) {
+  	console.log("got some data!");
     if (data.picture !== '') lastImage = data.picture;
   });
 });
