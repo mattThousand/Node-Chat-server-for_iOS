@@ -1,4 +1,5 @@
 // load and configure socket.io & express
+require('newrelic');
 var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
@@ -11,6 +12,10 @@ var port = process.env.PORT || 4000;
 
 // holds the base64 text from the last received images
 var lastImage = '';
+
+app.get('/ping', function(req, res){
+    res.end();
+});
 
 // returns the jpg image ressouce if the url
 // image/any_random_valid_ressource_string.jpg is called
