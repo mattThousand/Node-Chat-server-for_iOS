@@ -14,7 +14,7 @@ var lastImage = '';
 
 // returns the jpg image ressouce if the url
 // image/any_random_valid_ressource_string.jpg is called
-app.get('/image/*.jpeg', function (req, res) {
+app.get('/images/image.jpeg', function (req, res) {
   res.set('Content-Type', 'image/jpeg');
   // convert the base64 text into a string that the node Buffer object understands
   // and send the composed binary image data to the client
