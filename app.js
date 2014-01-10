@@ -12,13 +12,9 @@ var port = process.env.PORT || 4000;
 // holds the base64 text from the last received images
 var lastImage = '';
 
-app.get('/ping', function(req, res){
-    res.end();
-});
-
 // returns the jpg image ressouce if the url
 // image/any_random_valid_ressource_string.jpg is called
-app.get('/image/*.jpg', function (req, res) {
+app.get('/image/*.jpeg', function (req, res) {
   res.set('Content-Type', 'image/jpeg');
   // convert the base64 text into a string that the node Buffer object understands
   // and send the composed binary image data to the client
