@@ -36,22 +36,4 @@ wss.on('connection', function(ws) {
   });
 });
 
-
-app.get('/images/image.jpeg', function (req, res) {
-  res.set('Content-Type', 'image/jpeg');
-  // convert the base64 text into a string that the node Buffer object understands
-  // and send the composed binary image data to the client
-  res.send(new Buffer(lastImage.replace(/^data:image\/jpeg;base64,/,""), 'base64'));
-});
-
-
 console.log("listening on port: " + port);
-
-
-
-
-
-
-
-
-
