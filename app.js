@@ -11,7 +11,7 @@ function sendAll(message)
 {
 for(var i=1;i<CLIENTS.length;i++)
     {
-    CLIENTS[i].send("Message:"+ message);
+    CLIENTS[i].send(message);
     }
 }
 
