@@ -1,39 +1,39 @@
 // load and configure socket.io & express
-var express = require('express');
-var app = express();
-var server = require('http').createServer(app);
-var io = require('socket.io').listen(server);
+var express = require('express'),
+  app = express(),
+  ipaddress = '127.0.0.1',
+  port = process.env.PORT || 5000,
+  WebSocketServer = require('ws').Server,
+  wss = new WebSocketServer({host:ipaddress, port:port}),
+  CLIENTS = [];
 
-// defines the port, the server is running on
-// either the snd. argument from the server call
-// node server.js :port or falls back to port 8080 if none given
-var port = process.env.PORT || 4000;
+function sendAll(message)
+{
+for(var i=1;i<CLIENTS.length;i++)
+    {
+    CLIENTS[i].send("Message:"+ message);
+    }
+}
 
-// holds the base64 text from the last received images
-var lastImage = '';
-
-// returns the jpg image ressouce if the url
-// image/any_random_valid_ressource_string.jpg is called
-app.get('/images/image.jpeg', function (req, res) {
-  res.set('Content-Type', 'image/jpeg');
-  // convert the base64 text into a string that the node Buffer object understands
-  // and send the composed binary image data to the client
-  res.send(new Buffer(lastImage.replace(/^data:image\/jpeg;base64,/,""), 'base64'));
+// log open and close events
+wss.on('open', function() {
+    console.log('connected');
+    // ws.send(Date.now().toString(), {mask: true});
 });
-
-// get our little server up & running
-server.listen(port, function () {
-  console.log('Server running on port:' + port);
+wss.on('close', function() {
+    console.log('disconnected');
 });
+   
+// use like this:
+wss.on('connection', function(ws) {
+  CLIENTS.push(ws);
+  console.log("yo, " + CLIENTS.length + " user(s) are now connected");
+  ws.on('message', function(data) {
 
-// get our stream up and running
-io.sockets.on('connection', function (socket) {
-
-	console.log("connect to socket!");
-  // if socket data with the 'vs-stream' namespace is received,
-  // write the contents to the global ´lastImage´ variable
-  socket.on('vs-stream', function (data) {
-  	console.log("got some data!");
-    if (data.picture !== '') lastImage = data.picture;
+    // broadcast data to all clients
+    console.log("we gots datas!!!");
+    sendAll(data);
   });
 });
+
+console.log("listening on port: " + port);
