@@ -26,6 +26,7 @@ wss.on('close', function() {
    
 // use like this:
 wss.on('connection', function(ws) {
+  debugger;
   CLIENTS.push(ws);
   console.log("yo, " + CLIENTS.length + " user(s) are now connected");
   ws.on('message', function(data) {
