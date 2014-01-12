@@ -1,7 +1,7 @@
 // load and configure socket.io & express
 var express = require('express'),
   app = express(),
-  ipaddress = '127.0.0.1',
+  ipaddress = '54.209.194.52',
   port = process.env.PORT || 5000,
   WebSocketServer = require('ws').Server,
   wss = new WebSocketServer({host:ipaddress, port:port}),
