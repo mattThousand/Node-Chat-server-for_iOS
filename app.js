@@ -1,40 +1,36 @@
 // load and configure socket.io & express
 var express = require('express'),
   app = express(),
-  ipaddress = '54.209.194.52',
-  port = process.env.PORT || 5000,
-  WebSocketServer = require('ws').Server,
-  wss = new WebSocketServer({host:ipaddress, port:port}),
-  CLIENTS = [];
+  http = require('http'),
+  sockjs = require('sockjs'),
+  socketServer = sockjs.createServer(),
+  connections = [];
 
 function sendAll(message)
 {
-for(var i=1;i<CLIENTS.length;i++)
+  for(var i=0;i<connections.length;i++)
     {
-    CLIENTS[i].send(message);
+      connections[i].write(message);
     }
 }
 
-// log open and close events
-wss.on('open', function() {
-    console.log('connected');
-    // ws.send(Date.now().toString(), {mask: true});
-});
-wss.on('close', function() {
-    console.log('disconnected');
-});
-   
-// use like this:
-wss.on('connection', function(ws) {
-  debugger;
-  CLIENTS.push(ws);
-  console.log("yo, " + CLIENTS.length + " user(s) are now connected");
-  ws.on('message', function(data) {
 
+socketServer.on('connection', function(conn) {
+  console.log('Got connection');
+  connections.push(conn);
+  conn.on('data', function(message) {
     // broadcast data to all clients
-    console.log("we gots datas!!!");
-    sendAll(data);
+    console.log(message);
+    sendAll(message);
+  });
+  conn.on('close', function() {
+    connections.splice(connections.indexOf(conn), 1); // remove the connection
+    console.log('Lost connection');
   });
 });
 
-console.log("listening on port: " + port);
+
+
+var httpServer = http.createServer();
+socketServer.installHandlers(httpServer, {prefix:'/yo'});
+httpServer.listen(5555, '127.0.0.1');
